@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Alumni & Akademik - Universitas Kuningan</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="projek1.css">
+</head>
+
+<body>
+
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title fw-bold" id="modalTitle"><i class="fas fa-user-lock me-2"></i>Verifikasi Akses</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="mb-3 text-warning" id="modalIcon"><i class="fas fa-shield-alt fa-3x"></i></div>
+                        <p class="text-muted small" id="modalDesc">Silahkan lengkapi kredensial untuk melanjutkan.</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark" id="emailLabel">EMAIL / NIM / ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fas fa-user text-muted"></i></span>
+                            <input type="text" id="staffEmail" class="form-control" placeholder="Masukkan ID Anda">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark" id="passwordLabel">PASSWORD</label>
+                        <div class="input-group border border-primary-subtle rounded">
+                            <span class="input-group-text bg-light"><i class="fas fa-lock text-primary"></i></span>
+                            <input type="password" id="staffPassword" class="form-control" placeholder="Masukkan Password">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">KODE OTORITAS</label>
+                        <div class="input-group border border-warning rounded">
+                            <span class="input-group-text bg-warning-subtle text-warning"><i class="fas fa-key"></i></span>
+                            <input type="password" id="authCode" class="form-control" placeholder="MASUKKAN KODE">
+                        </div>
+                        <div class="form-text fw-bold text-danger mt-1" style="font-size: 10px;">
+                            <i class="fas fa-exclamation-circle"></i> WAJIB MENGGUNAKAN HURUF KAPITAL (CAPSLOCK)
+                        </div>
+                    </div>
+
+                    <div id="authError" class="alert alert-danger mt-2 py-2 small fw-bold" style="display:none;">
+                        Login Gagal! Periksa kredensial & kode Anda.
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" id="mainLoginBtn" class="btn btn-warning w-100 fw-bold py-2 shadow-sm">
+                        KONFIRMASI LOGIN <i class="fas fa-sign-in-alt ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="lokerDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalLokerPosisi">Detail Pekerjaan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <h4 class="fw-bold text-primary mb-1" id="modalLokerPerusahaan">Nama Perusahaan</h4>
+                    <p class="text-muted mb-4"><i class="fas fa-map-marker-alt me-2"></i><span id="modalLokerLokasi">Lokasi</span> | <i class="fas fa-briefcase me-2"></i><span id="modalLokerTipe">Tipe</span></p>
+
+                    <h6 class="fw-bold mb-2">Deskripsi Pekerjaan:</h6>
+                    <p id="modalLokerDeskripsi" class="text-muted">Memuat deskripsi...</p>
+
+                    <h6 class="fw-bold mb-2 mt-4">Kualifikasi:</h6>
+                    <ul id="modalLokerKualifikasi" class="text-muted"></ul>
+
+                    <div class="alert alert-warning py-2 small mt-4">
+                        <i class="fas fa-info-circle me-2"></i>Batas Lamaran: <strong id="modalLokerDeadline">-</strong>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Tutup</button>
+                    <a href="#" id="btnLamarSekarang" target="_blank" class="btn btn-primary fw-bold px-4">Lamar Sekarang <i class="fas fa-external-link-alt ms-2"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addLokerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">Tambah Lowongan Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formTambahLoker">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">POSISI PEKERJAAN</label>
+                            <input type="text" id="lokerPosisi" class="form-control" placeholder="Contoh: Web Developer" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">NAMA PERUSAHAAN</label>
+                            <input type="text" id="lokerPerusahaan" class="form-control" placeholder="Contoh: PT. Tech Indo" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">LOKASI</label>
+                                <input type="text" id="lokerLokasi" class="form-control" placeholder="Contoh: Jakarta" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">DEADLINE</label>
+                                <input type="date" id="lokerDeadline" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">DESKRIPSI & LINK (URL)</label>
+                            <textarea id="lokerDeskripsi" class="form-control" rows="3" placeholder="Masukkan deskripsi singkat atau link pendaftaran"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-bold">PUBLIKASIKAN LOWONGAN</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header id="main-header">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="logo fkom putih.png" alt="Logo" height="50">
+                    <div class="ms-2 brand-text">
+                        <div class="main-title small fw-bold">UNIVERSITAS KUNINGAN</div>
+                        <div class="sub-title x-small">FAKULTAS ILMU KOMPUTER</div>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto text-uppercase">
+                        <li class="nav-item">
+                            <a class="nav-link" style="cursor: pointer; color: #ffc107;" onclick="bukaPanelCari()">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section id="welcome-page" class="full-screen-center">
+        <div class="welcome-content text-center">
+            <img src="Logo_Universitas_Kuningan.png" alt="Logo" height="130" class="mb-3">
+            <p class="welcome-subtitle">PORTAL RESMI ALUMNI FAKULTAS ILMU KOMPUTER</p>
+            <h1 class="welcome-title">SELAMAT DATANG</h1>
+            <button class="btn-masuk-jumbo mt-5" onclick="goToProdi()">
+                MASUK KE SISTEM <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+            <div class="news-container mt-5">
+                <span class="news-label">LATEST UPDATES</span>
+                <div class="news-wrapper">
+                    <p id="news-ticker"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="prodi-page" class="hidden-section full-screen-center bg-light">
+        <div class="container text-center">
+            <h2 class="section-title-dark mb-5">SILAHKAN PILIH PROGRAM STUDI</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-3">
+                    <div class="card p-4 prodi-card border-0 shadow" onclick="goToDetailProdi('TEKNIK INFORMATIKA')">
+                        <i class="fas fa-code fa-3x mb-3 text-primary"></i>
+                        <h5 class="fw-bold">TEKNIK INFORMATIKA</h5>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-4 prodi-card border-0 shadow" onclick="goToDetailProdi('SISTEM INFORMASI')">
+                        <i class="fas fa-database fa-3x mb-3 text-primary"></i>
+                        <h5 class="fw-bold">SISTEM INFORMASI</h5>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-4 prodi-card border-0 shadow" onclick="goToDetailProdi('DESAIN KOMUNIKASI VISUAL')">
+                        <i class="fas fa-paint-brush fa-3x mb-3 text-primary"></i>
+                        <h5 class="fw-bold">DESAIN KOMUNIKASI VISUAL</h5>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card p-4 prodi-card border-0 shadow" onclick="goToDetailProdi('TEKNIK SIPIL')">
+                        <i class="fas fa-hard-hat fa-3x mb-3 text-primary"></i>
+                        <h5 class="fw-bold">TEKNIK SIPIL</h5>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-link mt-4 text-dark text-decoration-none" onclick="backToHome()">
+                <i class="fas fa-chevron-left me-1"></i> Kembali ke Beranda
+            </button>
+        </div>
+    </section>
+
+    <section id="visi-misi-prodi" class="hidden-section full-screen-center">
+        <div class="container">
+            <div class="glass-card p-5 text-white shadow-lg">
+                <h2 id="title-prodi-detail" class="fw-bold text-warning mb-4 text-center">PRODI</h2>
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="p-4 bg-white text-dark rounded-3 h-100 shadow">
+                            <h4 class="fw-bold text-primary border-bottom pb-2">VISI</h4>
+                            <p id="visi-text" class="mt-3">Memuat visi...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="p-4 bg-white text-dark rounded-3 h-100 shadow">
+                            <h4 class="fw-bold text-primary border-bottom pb-2">MISI</h4>
+                            <ul id="misi-list" class="mt-3"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 text-center">
+                    <button class="btn btn-warning btn-lg px-5 fw-bold rounded-pill shadow" onclick="goToDashboard()">
+                        BUKA DASHBOARD SISTEM <i class="fas fa-user-graduate ms-2"></i>
+                    </button>
+                    <br>
+                    <button class="btn btn-link text-white mt-3 text-decoration-none" onclick="backToProdiSelection()">
+                        <i class="fas fa-sync-alt me-1"></i> Kembali Pilih Prodi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="main-dashboard" class="hidden-section">
+        <header class="sticky-top shadow-lg">
+            <div class="top-bar bg-white py-2 border-bottom">
+                <div class="container d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-4">
+                        <a href="javascript:void(0)" onclick="switchMainTab('home')" class="nav-role main-nav active text-dark fw-bold" id="tab-home" style="text-decoration: none;">Beranda & Info</a>
+                        <a href="javascript:void(0)" onclick="switchMainTab('form')" class="nav-role main-nav text-muted" id="tab-form" style="text-decoration: none;">Daftar Alumni</a>
+                        <a href="javascript:void(0)" onclick="switchMainTab('data')" class="nav-role main-nav text-muted" id="tab-data" style="text-decoration: none;">Data Alumni</a>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-dark rounded-pill px-3 dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-shield me-1"></i> Login
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="loginDropdown">
+                            <li><h6 class="dropdown-header">Pilih Kategori</h6></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="openLoginForm('Staff')"><i class="fas fa-user-tie me-2"></i> Staff / Dosen</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="openLoginForm('Mahasiswa')"><i class="fas fa-user-graduate me-2"></i> Mahasiswa</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="openLoginForm('Alumni')"><i class="fas fa-user-tag me-2"></i> Alumni</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="navbar navbar-light" style="background-color: #ffcc00; border-bottom: 3px solid #000;">
+                <div class="container">
+                    <a class="navbar-brand d-flex align-items-center" href="javascript:void(0)">
+                        <img id="logo-prodi-header" src="logo fkom putih.png" height="50">
+                        
+                        <div class="ms-3 text-dark">
+                            <div id="main-title-header" class="fw-bold mb-0" style="font-size: 1.2rem; line-height: 1.2;">UNIVERSITAS KUNINGAN</div>
+                            
+                            <div id="sub-title-header" class="small fw-bold" style="opacity: 0.8;">FAKULTAS ILMU KOMPUTER</div>
+                        </div>
+                    </a>
+                    <button class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold" onclick="backToProdiSelection()">
+                        <i class="fas fa-exchange-alt me-1"></i> Ganti Prodi
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main id="dashboard-content-area">
+            <section id="admin-control-panel" class="hidden-section">
+                <div class="container text-center">
+                    <h2 class="fw-bold mb-4">Pusat Kendali Staf</h2>
+                    <p class="text-muted mb-5">Silakan pilih bagian yang ingin Anda kelola:</p>
+                    
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-3">
+                            <div class="card h-100 shadow-sm border-0 p-4 hover-up" onclick="showEditSection('news')">
+                                <i class="fas fa-newspaper fa-3x text-primary mb-3"></i>
+                                <h5>Kelola Berita</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100 shadow-sm border-0 p-4 hover-up" onclick="showEditSection('career')">
+                                <i class="fas fa-briefcase fa-3x text-success mb-3"></i>
+                                <h5>Kelola Lowongan</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100 shadow-sm border-0 p-4 hover-up" onclick="showEditSection('alumni')">
+                                <i class="fas fa-users fa-3x text-warning mb-3"></i>
+                                <h5>Data Alumni</h5>
+                            </div>
+                        </div>
+                    </div>  
+                    
+                    
+                    <button class="btn btn-danger mt-3 w-100" onclick="matikanModeEdit()"> 
+                        <i class="fas fa-power-off me-2"></i> SELESAI MENGEDIT & LOGOUT
+                    </button>
+                </div>
+            </section>
+
+            <section id="subpage-home" class="py-4">
+                <div class="container mt-3 admin-only" style="display:none;">
+                    <button class="btn btn-dark shadow-sm" onclick="kembaliKePanelAdmin()">
+                        <i class="fas fa-arrow-left me-2"></i> Kembali ke Pusat Kendali Admin
+                    </button>
+                </div>
+                
+                <div class="container">
+                    <div class="card career-banner-card shadow-lg mb-5 border-0 overflow-hidden">
+                        <div class="row g-0">
+                            <div class="col-md-6 p-5 d-flex flex-column justify-content-center bg-white">
+                                <h1 class="display-5 fw-bold mb-3">UNIKU <span class="text-warning">Career</span></h1>
+                                <p class="text-muted fs-5 mb-4">Sistem terintegrasi membantu menjangkau kandidat terbaik UNIKU.</p>
+                                <button class="btn btn-sm btn-outline-danger btn-edit-staff mb-3 w-25" style="display:none;" onclick="alert('Fitur Update Berita Staff')">EDIT BANNER</button>
+                                <h5 class="text-warning fw-bold mb-3">Portal Mitra</h5>
+                                <div class="row g-3">
+                                    <div class="col-6 small fw-bold"><i class="fas fa-users-cog text-primary me-2"></i>Rekrutmen</div>
+                                    <div class="col-6 small fw-bold"><i class="fas fa-calendar-check text-primary me-2"></i>Career Fair</div>
+                                    <div class="col-6 small fw-bold"><i class="fas fa-user-check text-primary me-2"></i>Seleksi</div>
+                                    <div class="col-6 small fw-bold"><i class="fas fa-id-card-alt text-primary me-2"></i>Verifikasi</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 bg-primary p-5 d-flex flex-column align-items-center justify-content-center text-center text-white">
+                                <div class="portal-box mb-4 bg-white p-3 rounded shadow">
+                                    <h3 class="text-primary fw-bold m-0">Portal Resmi</h3>
+                                    <p class="text-dark fw-bold m-0">Alumni & Karir</p>
+                                </div>
+                                <i class="fas fa-laptop-code fa-4x mb-4 opacity-50"></i>
+                                <p class="fw-bold mb-1">Bergabung menjadi Mitra!</p>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#devModal" class="text-warning text-decoration-none fw-bold">
+                                 mitra.simaster.uniku.ac.id
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="devModal" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center pb-5">
+                                <i class="fas fa-tools fa-4x text-warning mb-3"></i>
+                                <h4 class="fw-bold">Under Development</h4>
+                                <p class="text-muted">Maaf, fitur Portal Mitra saat ini sedang dalam tahap pengembangan untuk memberikan pengalaman terbaik bagi Anda.</p>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Mengerti</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-12 d-flex justify-content-between align-items-center">
+                            <h4 class="fw-bold mb-0"><i class="fas fa-graduation-cap text-warning me-2"></i>Program Pendidikan Unggulan</h4>
+                            <button class="btn btn-sm btn-warning btn-edit-staff" style="display:none;" onclick="alert('Menu Edit Program')">EDIT PROGRAM</button>
+                        </div>
+                        <div class="row g-4 mt-2">
+                            <div class="col-md-4">
+                                <div class="education-info-card hover-up" onclick="showUnderConstruction()">
+                                    <div class="education-icon-box">
+                                        <i class="fas fa-industry"></i>
+                                    </div>
+                                    <h5 class="fw-bold">Kurikulum Berbasis Industri</h5>
+                                    <p class="small text-muted">Penyelarasan kurikulum dengan standar kebutuhan industri teknologi masa kini.</p>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+                                <div class="education-info-card hover-up" onclick="showUnderConstruction()">
+                                    <div class="education-icon-box">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <h5 class="fw-bold">MBKM (Merdeka Belajar)</h5>
+                                    <p class="small text-muted">Kesempatan magang bersertifikat selama 2 semester di perusahaan mitra.</p>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+                                <div class="education-info-card hover-up" onclick="showUnderConstruction()">
+                                    <div class="education-icon-box">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <h5 class="fw-bold">Sertifikasi Global</h5>
+                                    <p class="small text-muted">Sertifikasi internasional dari Microsoft, Cisco, dan Oracle untuk mahasiswa.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-8">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h4 class="fw-bold mb-0"><i class="fas fa-bullhorn text-warning me-2"></i>Lowongan Kerja Terkini</h4>
+                                    <button class="btn btn-sm btn-dark btn-edit-staff" style="display:none;" onclick="openAddLokerModal()">+ LOKER BARU</button>
+                                </div>
+                                <div id="loker-container" class="row g-3"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="modal fade" id="modalEditLoker" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-dark text-white">
+                                        <h5 class="modal-title">Update Lowongan Kerja</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="formLoker">
+                                            <div class="mb-3">
+                                                <label class="form-label">Posisi Pekerjaan</label>
+                                                <input type="text" id="editPosisi" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Nama Perusahaan</label>
+                                                <input type="text" id="editPerusahaan" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Link Detail (URL)</label>
+                                                <input type="url" id="editLink" class="form-control" placeholder="https://..." required>
+                                            </div>
+                                            <button type="submit" class="btn btn-success w-100">SIMPAN PERUBAHAN</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="modal fade" id="lokerDetailModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="modalLokerPosisi">Detail Loker</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h4 class="text-primary fw-bold" id="modalLokerPerusahaan"></h4>
+                                        <p id="modalLokerDeskripsi"></p>
+                                        <div class="alert alert-light border">
+                                            <small>Batas Lamaran: <span id="modalLokerDeadline"></span></small>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        <a href="#" id="btnLamarSekarang" class="btn btn-primary">Lamar Sekarang <i class="fas fa-external-link-alt ms-1"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card border-0 shadow-sm p-4 rounded-4 bg-light h-100">
+                                <h5 class="fw-bold border-bottom pb-2 mb-3">Pengumuman</h5>
+                                <div class="alert alert-info py-2 small border-0 mb-2">Ijazah periode Januari 2026 sudah dapat diambil.</div>
+                                <div class="alert alert-warning py-2 small border-0">Harap update data Tracer Study di menu Daftar Alumni.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-12 d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="fw-bold mb-0"><i class="fas fa-newspaper text-primary me-2"></i>Berita & Artikel Terkini</h4>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-danger btn-edit-staff" style="display:none;" onclick="alert('Fitur Tambah Berita')">TAMBAH BERITA</button>
+                                <a href="#" class="btn btn-outline-primary btn-sm rounded-pill px-3">Lihat Semua</a>
+                            </div>
+                        </div>
+                        
+                    <div class="row g-4">
+    
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm overflow-hidden news-card-item">
+                            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500" class="card-img-top" alt="News" style="height: 180px; object-fit: cover;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-primary-subtle text-primary" style="font-size: 10px;">AKADEMIK</span>
+                                    <small class="text-muted" style="font-size: 11px;">15 Jan 2026</small>
+                                </div>
+                                <h6 class="fw-bold edit-area">Persiapan Akreditasi Internasional FIKOM 2026</h6>
+                                <p class="text-muted mb-3 edit-area" style="font-size: 13px; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+                                    Fakultas Ilmu Komputer UNIKU memulai langkah strategis untuk meraih akreditasi standar global...
+                                </p>
+                                <a href="https://uniku.ac.id" target="_blank" class="btn btn-link p-0 text-decoration-none fw-bold small text-primary">BACA SELENGKAPNYA <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm overflow-hidden news-card-item">
+                            <img src="https://cdn1-production-images-kly.akamaized.net/p_DHJ3EFs-n9sQ6A34myJu8fLrA=/673x379/smart/filters:quality(75):strip_icc()/kly-media-production/thumbnails/1360607/original/068155100_1475220646-paket-indo2sv-6b38d6.jpg" class="card-img-top" alt="News" style="height: 180px; object-fit: cover;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-success-subtle text-success" style="font-size: 10px;">MAHASISWA</span>
+                                    <small class="text-muted" style="font-size: 11px;">12 Jan 2026</small>
+                                </div>
+                                <h6 class="fw-bold edit-area">Mahasiswa TI Lolos Program Magang di Silicon Valley</h6>
+                                <p class="text-muted mb-3 edit-area" style="font-size: 13px; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+                                    Dua mahasiswa berprestasi prodi Teknik Informatika berhasil mengamankan posisi magang internasional...
+                                </p>
+                                <a href="https://uniku.ac.id" target="_blank" class="btn btn-link p-0 text-decoration-none fw-bold small text-primary">BACA SELENGKAPNYA <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm overflow-hidden news-card-item">
+                            <img src="https://www.jagoanhosting.com/blog/wp-content/uploads/2024/10/Diskusi-Cyber-Security-Untuk-Tingkatkan-Literasi-Keamanan-Digital.jpg" class="card-img-top" alt="News" style="height: 180px; object-fit: cover;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-warning-subtle text-dark" style="font-size: 10px;">EVENT</span>
+                                    <small class="text-muted" style="font-size: 11px;">10 Jan 2026</small>
+                                </div>
+                                <h6 class="fw-bold edit-area">Workshop Cyber Security Bersama BSSN</h6>
+                                <p class="text-muted mb-3 edit-area" style="font-size: 13px; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+                                    Guna memperkuat literasi digital, FKOM menyelenggarakan workshop keamanan siber tingkat lanjut...
+                                </p>
+                                <a href="https://uniku.ac.id" target="_blank" class="btn btn-link p-0 text-decoration-none fw-bold small text-primary">BACA SELENGKAPNYA <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </section>
+
+            <section id="subpage-staff" class="hidden-section py-5 bg-light">
+                <div class="container">
+                    <h2 class="section-title-dark text-center mb-5">STAF & DOSEN PENGAMPU</h2>
+                    <div class="row g-4" id="staff-list"></div>
+                </div>
+            </section>
+
+            <section id="subpage-form" class="hidden-section py-5">
+                <div class="container">
+                    <div class="card shadow-lg border-0 rounded-4 p-5 mx-auto" style="max-width: 800px;">
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold">FORM PENDATAAN ALUMNI</h2>
+                        </div>
+                        <form id="formAlumni">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">NAMA LENGKAP</label>
+                                    <input type="text" id="inputNama" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">NIM</label>
+                                    <input type="text" id="inputNIM" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">PROGRAM STUDI</label>
+                                    <select id="inputProdi" class="form-select" required>
+                                        <option value="">-- Pilih Prodi --</option>
+                                        <option value="Teknik Informatika">Teknik Informatika</option>
+                                        <option value="Sistem Informasi">Sistem Informasi</option>
+                                        <option value="Desain Komunikasi Visual">Desain Komunikasi Visual</option>
+                                        <option value="Teknik Sipil">Teknik Sipil</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">TAHUN LULUS</label>
+                                    <input type="number" id="inputTahun" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">NOMOR WHATSAPP</label>
+                                    <input type="tel" id="inputHP" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">E-MAIL AKTIF</label>
+                                    <input type="email" id="inputEmail" class="form-control" placeholder="contoh@gmail.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">PRESTASI/PENGALAMAN</label>
+                                    <input type="text" id="inputPrestasi" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">STATUS SAAT INI</label>
+                                    <select id="inputPosisi" class="form-select" required onchange="toggleAlumniDetails()">
+                                        <option value="">-- Pilih Status --</option>
+                                        <option value="Bekerja">Bekerja</option>
+                                        <option value="Wirausaha">Wirausaha</option>
+                                        <option value="Pendidikan">Lanjut Studi</option>
+                                        <option value="Mencari Kerja">Mencari Kerja</option>
+                                    </select>
+                                </div>
+                                <div id="detailTambahan" class="col-md-12 mt-3" style="display:none;">
+                                    <div class="p-3 bg-light rounded-3 border-start border-primary border-4">
+                                        <h6 id="detailTitle" class="fw-bold text-primary mb-3">Informasi Tambahan</h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label id="labelDetail1" class="form-label fw-bold small">NAMA PERUSAHAAN</label>
+                                                <input type="text" id="inputDetail1" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label id="labelDetail2" class="form-label fw-bold small">LOKASI / BIDANG</label>
+                                                <input type="text" id="inputDetail2" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-4 text-center">
+                                    <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill fw-bold">SIMPAN DATA <i class="fas fa-paper-plane ms-2"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="subpage-data" class="hidden-section py-5">
+                <div class="container">
+                    <h2 class="fw-bold mb-4">Database Alumni FKOM</h2>
+                    <div class="card shadow border-0 rounded-4 overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle text-center mb-0">
+                                <div class="row mb-3">
+                                    <div class="col-md-4 ms-auto">
+                                        <div class="row mb-3 g-2 justify-content-end">
+                                            <div class="row mb-3 g-2 justify-content-end">
+                                                <div class="col-md-3">
+                                                    <select id="filterProdiAlumni" class="form-select border-0 shadow-sm" onchange="filterAlumni()">
+                                                        <option value="">Program Studi</option>
+                                                        <option value="SISTEM INFORMASI">Sistem Informasi</option>
+                                                        <option value="TEKNIK INFORMATIKA">Teknik Informatika</option>
+                                                        <option value="TEKNIK INFORMATIKA">Teknik Sipil</option>
+                                                        <option value="TEKNIK INFORMATIKA">Desain Komunikasi Visual</option>
+                                                    </select>
+                                                </div>
+                                            
+                                                <div class="col-md-2">
+                                                    <select id="filterTahunAlumni" class="form-select border-0 shadow-sm" onchange="filterAlumni()">
+                                                        <option value="">Tahun lulus</option>
+                                                        <option value="2025">2025</option>
+                                                        <option value="2024">2024</option>
+                                                        <option value="2023">2023</option>
+                                                        <option value="2022">2022</option>
+                                                        <option value="2022">2021</option>
+                                                        <option value="2022">2020</option>
+                                                        <option value="2022">2019</option>
+                                                        <option value="2022">2018</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <div class="input-group shadow-sm">
+                                                        <span class="input-group-text bg-white border-0"><i class="fas fa-search text-muted"></i></span>
+                                                        <input type="text" id="searchAlumni" class="form-control border-0" 
+                                                               placeholder="Cari nama alumni..." onkeyup="filterAlumni()">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>NIM</th>
+                                        <th>Prodi</th>
+                                        <th>Tahun</th>
+                                        <th>Nomor Handphone</th>
+                                        <th>Prestasi/Pengalaman</th>
+                                        <th>Posisi/Status</th>
+                                        <th class="btn-edit-staff" style="display:none;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alumni-public-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div class="modal fade" id="globalSearchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fas fa-search me-2"></i>Pencarian Global UNIKU</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="text" id="globalSearchInput" class="form-control form-control-lg mb-4" 
+                       placeholder="Ketik kata kunci (Contoh: Budi, Magang, Akreditasi...)" onkeyup="universalSearch()">
+                
+                <div id="searchResultArea">
+                    <p class="text-muted small fw-bold">HASIL PENCARIAN:</p>
+                    <div id="resultsList" class="list-group list-group-flush">
+                        <div class="text-center py-4 text-muted">Silahkan ketik sesuatu...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="admin-only" style="display:none; position: fixed; bottom: 30px; right: 30px; z-index: 10000;">
+        <button class="btn btn-success btn-lg shadow-lg fw-bold px-4" onclick="alert('SEMUA PERUBAHAN BERHASIL DISIMPAN KE SISTEM!')">
+            <i class="fas fa-save me-2"></i> SIMPAN PERUBAHAN
+        </button>
+    </div>
+
+    <footer class="bg-light pt-5 pb-4 mt-5 border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="d-flex align-items-start">
+                        <i class="fas fa-map-marked-alt fa-2x text-primary me-3"></i>
+                        <div>
+                            <h6 class="fw-bold mb-3">UNIKU KAMPUS 2</h6>
+                            <p class="text-muted small mb-1">Jl. Pramuka No.67, Purwawinangun, Kec. Kuningan,</p>
+                            <p class="text-muted small mb-1">Kabupaten Kuningan, Jawa Barat - 45512</p>
+                            <p class="text-muted small mb-3">Telepon: (0232) 875 097</p>
+                            <a href="https://maps.google.com/?cid=15515701603380758888&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQ" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3 shadow-sm">
+                                <i class="fas fa-directions me-1"></i> Petunjuk Arah
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5 mb-4">
+                    <div class="rounded-4 overflow-hidden shadow-sm border" style="height: 180px;">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.228182998782!2d108.47524637491147!3d-6.97592609302462!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f16802ef8da05%3A0x2752d8670e780968!2sKampus%202%20UNIKU%20Fakultas%20Ilmu%20Komputer!5e0!3m2!1sid!2sid!4v1708891000000!5m2!1sid!2sid" 
+                            width="120%" height="120%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    <p class="text-center text-muted small mt-2"><i class="fas fa-info-circle me-1"></i> Lokasi Gedung Fakultas Ilmu Komputer</p>
+                </div>
+
+                <div class="col-md-3 mb-4 text-md-end">
+                    <h6 class="fw-bold mb-3">Ikuti Kami</h6>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/UniversitasKuninganJaBar/" target="_blank" class="text-primary me-3 text-decoration-none">
+                            <i class="fab fa-facebook-square fa-2x"></i>
+                        </a>
+                        
+                        <a href="https://www.instagram.com/fkom.uniku?igsh=azZlZjhrMW5rMjBh" target="_blank" class="text-primary me-3 text-decoration-none">
+                            <i class="fab fa-instagram fa-2x"></i>
+                        </a>
+                        
+                        <a href="http://www.youtube.com/@fakultaskomputeruniversita7005" target="_blank" class="text-primary me-3 text-decoration-none">
+                            <i class="fab fa-youtube fa-2x"></i>
+                        </a>
+
+                        <a href="https://www.tiktok.com/@universitaskuningan?is_from_webapp=1&sender_device=pc" target="_blank" class="text-primary text-decoration-none">
+                            <i class="fab fa-tiktok fa-2x"></i>
+                        </a>
+                    </div>
+                    <div class="contact-info-footer">
+                    <p class="text-muted small mb-0">
+                        Email : <a href="mailto:fkom@uniku.ac.id" class="text-decoration-none text-muted">fkom@uniku.ac.id</a>
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4 pt-3 border-top" style="border-top-width: 3px !important; border-top-color: #dee2e6 !important;">
+            <p class="text-muted x-small">© 2026 Fakultas Ilmu Komputer - Universitas Kuningan</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="projek1.js"></script>
+    <div id="panelCari" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: flex-start; padding-top: 100px;">
+        <div style="background: white; width: 90%; max-width: 500px; padding: 20px; border-radius: 10px;">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="fw-bold">Pencarian Tools</h5>
+                <button class="btn-close" onclick="tutupPanelCari()"></button>
+            </div>
+            <input type="text" id="inputCariFitur" class="form-control" placeholder="Cari data, loker, atau form..." onkeyup="mulaiMencari()">
+            <div id="boxHasil" class="list-group mt-3"></div>
+        </div>
+    </div>
+</body>
+</html>
